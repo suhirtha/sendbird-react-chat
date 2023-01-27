@@ -381,6 +381,7 @@ const ChannelList = ({
                 <p>Custom type:</p>
                 <select onChange={(e) => handleChangeCustomType(e)} value={currentCustomType}>
                     <option value="all">all</option>
+                    <option value="onlycustom">Only CustomType</option>
                     {
                         [...new Set(channels
                             .map(channel => channel.customType)
@@ -391,7 +392,7 @@ const ChannelList = ({
                 </select>
             </div>
             {channels
-                .filter(channel => currentCustomType === 'all' ? channel : channel.customType === currentCustomType)
+                .filter(channel => (currentCustomType === 'all' || currentCustomType === 'onlycustom')? ((currentCustomType === 'all')? channel : channel.customType.trim() != "") : channel.customType === currentCustomType)
                 .map(channel => {
                     return (
                         <div key={channel.url} className="channel-list-item" >
