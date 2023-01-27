@@ -180,8 +180,8 @@ const GroupChannelCategorizeByCustomType = (props) => {
         updateState({ ...state, currentlyJoinedChannel: null })
     }
 
-    const handleCreateChannel = async (channelName = "testChannel",) => {
-        const [groupChannel, error] = await createChannel(channelName, state.groupChannelMembers);
+    const handleCreateChannel = async (channelName = "testChannel", customType = "Suhirtha") => {
+        const [groupChannel, error] = await createChannel(channelName, state.groupChannelMembers, customType);
         if (error) {
             return onError(error);
         }
@@ -667,11 +667,12 @@ const inviteUsersToChannel = async (channel, userIds) => {
     await channel.inviteWithUserIds(userIds);
 }
 
-const createChannel = async (channelName, userIdsToInvite) => {
+const createChannel = async (channelName, userIdsToInvite, customType) => {
     try {
         const groupChannelParams = {};
         groupChannelParams.invitedUserIds = userIdsToInvite;
         groupChannelParams.name = channelName;
+        groupChannelParams.customType = customType;
         groupChannelParams.operatorUserIds = userIdsToInvite;
         const groupChannel = await sb.groupChannel.createChannel(groupChannelParams);
         return [groupChannel, null];
