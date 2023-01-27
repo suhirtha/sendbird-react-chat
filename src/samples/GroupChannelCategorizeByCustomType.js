@@ -398,7 +398,7 @@ const ChannelList = ({
                             <div
                                 className="channel-list-item-name"
                                 onClick={() => { handleJoinChannel(channel.url) }}>
-                                <ChannelName members={channel.members} />
+                                {channel.customType? (channel.name +" ("+channel.customType + ")") : <ChannelName members={channel.members} />}
                                 <div className="last-message">{channel.lastMessage?.message}</div>
                             </div>
                             <div>
