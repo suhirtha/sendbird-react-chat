@@ -12,6 +12,8 @@ import {
 
 import { SENDBIRD_INFO } from '../constants/constants';
 import { timestampToTime, handleEnterPress } from '../utils/messageUtils';
+import {notifyMe} from '../utils/helpers';
+
 let sb;
 
 const GroupChannelCategorizeByCustomType = (props) => {
@@ -33,6 +35,8 @@ const GroupChannelCategorizeByCustomType = (props) => {
         loading: false,
         error: false
     });
+
+    const notified = {};
 
     //need to access state in message received callback
     const stateRef = useRef();
@@ -63,6 +67,14 @@ const GroupChannelCategorizeByCustomType = (props) => {
             });
 
             updateState({ ...stateRef.current, channels: updatedChannels });
+            updatedChannels.forEach(function(channel){
+                if(channel.lastMessage && channel.lastMessage.sender && (stateRef.current.userIdInputValue != channel.lastMessage.sender.userId) && !notified[channel.lastMessage.messageId]){
+                    notifyMe(channel.lastMessage.message);
+                    notified[channel.lastMessage.messageId] = true;
+                }
+            });
+
+            console.log("Channel updated",updatedChannels);
         },
     }
 
@@ -71,7 +83,14 @@ const GroupChannelCategorizeByCustomType = (props) => {
             const updatedMessages = [...stateRef.current.messages, ...messages];
 
             updateState({ ...stateRef.current, messages: updatedMessages });
-
+            console.log(stateRef);
+            messages.forEach(function(messageObj){
+                if((stateRef.current.userIdInputValue != messageObj.sender.userId)&& !notified[channel.lastMessage.messageId]){
+                    notifyMe(messageObj.message);
+                     notified[messageObj.messageId] = true;
+                    console.log(messageObj);
+                }
+            });
         },
         onMessagesUpdated: (context, channel, messages) => {
             const updatedMessages = [...stateRef.current.messages];
